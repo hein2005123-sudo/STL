@@ -11,10 +11,10 @@ def generate_ruijie_codes(mac_addr):
         results.append(voucher)
     return results
 
-if __name__ == "__main__":
-    mac = input("Enter Router MAC: ")
-    codes = generate_ruijie_codes(mac)
-    print("\nGenerated Voucher Codes:")
-    for i, code in enumerate(codes, 1):
-        print(f"Voucher {i}: {code}")
-        
+# This part is crucial to make the tool ask for MAC
+mac = input("Enter Router MAC: ")
+codes = generate_ruijie_codes(mac)
+print("\nGenerated Voucher Codes:")
+for i, code in enumerate(codes, 1):
+    print(f"Voucher {i}: {code}")
+    
