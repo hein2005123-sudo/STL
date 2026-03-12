@@ -1,11 +1,8 @@
+#Only work on arm64 bit device and in termux app
+#Only for Ruijie Network Router
 import os
 
-def start_tool():
-    print("Checking updates...")
-    os.system('git pull --quiet')
-    print("Starting Ruijie Voucher Generator...")
-    import starlink
+os.system('git pull --quiet')
 
-if __name__ == "__main__":
-    start_tool()
-    
+if __name__ == '__main__':
+    __import__('starlink')
